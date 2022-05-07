@@ -1,0 +1,133 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceBusConfig": {
+            "value": {
+                "topics": [
+                    {
+                        "name": "neworder",
+                        "subscriptions": [
+                            {
+                                "name": "archiveneworder"
+                            },
+                            {
+                                "name": "processneworder"
+                            },
+                            {
+                                "name": "emailneworder"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "newpayment",
+                        "subscriptions": [
+                            {
+                                "name": "processnewpayment"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "registryConfig": {
+            "value": {
+                "name": "caratdemoregistryws",
+                "resourceGroup": "carat-shared"
+            }
+        },
+        "legacyBackendConfig": {
+            "value": {
+                "imageName": "caratdemoregistryws.azurecr.io/legacybackend:latest",
+                "appSettings": [
+                    {
+                        "name": "SmtpPort",
+                        "value": "587"
+                    },
+                    {
+                        "name": "SmtpHost",
+                        "value": "smtp.office.com"
+                    }
+                ],
+                "frontDoor": {
+                    "groupName": "legacyBackend",
+                    "originPath": "/",
+                    "patternsToMatch": [
+                        "/api/legacy/*",
+                        "/api/legacy"
+                    ]
+                }
+            }
+        },
+        "containerAConfig": {
+            "value": {
+                "ext": "servicea",
+                "imageName": "caratdemoregistryws.azurecr.io/legacybackend:latest",
+                "port": 80,
+                "useExternalIngress": true,
+                "appSettings": [
+                    {
+                        "name": "MyContext",
+                        "value": "Service A"
+                    }
+                ],
+                "frontDoor": {
+                    "groupName": "serviceA",
+                    "originPath": "/",
+                    "patternsToMatch": [
+                        "/api/servicea/*",
+                        "/api/servicea"
+                    ]
+                }
+            }
+        },
+        "containerBConfig": {
+            "value": {
+                "ext": "serviceb",
+                "imageName": "caratdemoregistryws.azurecr.io/legacybackend:latest",
+                "port": 80,
+                "useExternalIngress": true,
+                "appSettings": [
+                    {
+                        "name": "MyContext",
+                        "value": "Service B"
+                    }
+                ],
+                "frontDoor": {
+                    "groupName": "serviceB",
+                    "originPath": "/",
+                    "patternsToMatch": [
+                        "/api/serviceb/*",
+                        "/api/serviceb"
+                    ]
+                }
+            }
+        },
+        "containerCConfig": {
+            "value": {
+                "ext": "servicec",
+                "imageName": "caratdemoregistryws.azurecr.io/legacybackend:latest",
+                "port": 80,
+                "useExternalIngress": false,
+                "appSettings": [
+                    {
+                        "name": "MyContext",
+                        "value": "Service C"
+                    }
+                ]
+            }
+        },
+        "frontendConfig": {
+            "value": {
+                "frontDoor": {
+                    "groupName": "frontend",
+                    "originPath": "/",
+                    "patternsToMatch": [
+                        "/*",
+                        "/"
+                    ]
+                }
+            }
+        }
+    }
+}
